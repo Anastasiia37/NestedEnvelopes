@@ -1,6 +1,9 @@
-﻿using Envelopes;
+﻿// <copyright file="EnvelopeTests.cs" company="Peretiatko Anastasiia">
+// Copyright (c) Peretiatko Anastasiia. All rights reserved.
+// </copyright>
+
+using Envelopes;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
-using System;
 
 namespace EnvelopeTests
 {
@@ -25,7 +28,6 @@ namespace EnvelopeTests
             bool actual = envelope1.IsNesting(envelope2);
 
             // Assert
-            Assert.AreEqual(expected, actual);
             Assert.AreEqual(expected, actual);
         }
 
@@ -53,13 +55,32 @@ namespace EnvelopeTests
 
         [DataTestMethod]
         [DataRow(2, -3)]
-        [DataRow(-5, -4)]
+        [DataRow(-5, 0)]
         [DataRow(-5, 4)]
-        [ExpectedException(typeof(EnvelopeException), "Exception \"EnvelopeException\" haven`t been thrown")]
+        [ExpectedException(typeof(EnvelopeException), "Exception \"EnvelopeException\" hasn`t been thrown")]
         public void Envelope_InitializeTest_ReturnedEnvelopeException(float sideA, float sideB)
         {
             // Arrange
             Envelope envelope1 = Envelope.Initialize(sideA, sideB);
+        }
+
+        [TestMethod()]
+        public void Envelope_InitializeTest_ReturnedCorrectEnvelope()
+        {
+            // Arrange
+            float sideA = 5;
+            float sideB = 4;
+
+            // Act
+            Envelope envelope = Envelope.Initialize(sideA, sideB);
+
+            // Assert
+            AssertsAccumulator assertsAccumulator = new AssertsAccumulator();
+            assertsAccumulator.Accumulate(() => Assert.IsNotNull(envelope));
+            assertsAccumulator.Accumulate(() => Assert.IsInstanceOfType(envelope, typeof(Envelope)));
+            assertsAccumulator.Accumulate(() => Assert.AreEqual(sideA, envelope.SideA));
+            assertsAccumulator.Accumulate(() => Assert.AreEqual(sideB, envelope.SideB));
+            assertsAccumulator.Release();
         }
     }
 }
